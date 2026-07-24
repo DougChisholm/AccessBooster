@@ -10,4 +10,6 @@
 8. Edit the repo secrets to match the entra app keys
 9. Run the deploy.yml workflow
 
-Tip: Ask your account team for an AccessBooster workshop and an AI Apps Solution Engineer will walk you through all these steps on a teams call.
+For help just ask your Microsoft account team for an AccessBooster workshop and an AI Apps Solution Engineer will walk you through all these steps on a teams call.
+
+You can also use a Microsoft sandbox in our self-serve interface here: https://msaccessboost.com
