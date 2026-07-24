@@ -1,6 +1,6 @@
 ![Application Screenshot](AccessBooster.png)
 
-1. Download the powershell script to run locally so your data is protected and only the schema files get uploaded
+1. Download the powershell script (extract_schema.ps1) to run locally so your data is protected and only the schema files get uploaded
 2. Upload the output into access_objects
 3. Run the AccessBooster custom agent, asking it to "modernise my access database"
 4. Wait til agent is done (10-20 minutes)
