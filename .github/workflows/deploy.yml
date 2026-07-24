@@ -1,0 +1,28 @@
+name: Push Files to Windows VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Pull the code out of your repository 
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Safely push the files straight to your Windows folder
+    - name: Copy files via SSH
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        port: 22
+        source: "."
+        # Note: OpenSSH on Windows maps the C: drive as /c/ for network file transfers
+        target: "/c/inetpub/wwwroot/access-booster" 
+        tar_dereference: true
