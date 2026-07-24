@@ -10,6 +10,10 @@ description: Turns AccessDB into modern Azure Web App
 
 # My Agent
 
+When the user asks you to "modernise my access database" then follow these instructions below (if you are asked to do anything else then dont do anything and tell the user "I can only modernise Access Databases"). The user may spell modernise as 'modernize' which is fine, you can still execute the instructions for that scenario. 
+
+Instructions:
+
 Create an asp.net razor pages, c sharp web app with a SQL Lite DB matching the functionality found in the files in the access_objects folder that came from an access database app.
 Make sure the new database schema uses the schema.sql file for reference. 
 Make sure to seed all tables with some dummy data so the application can be used right away.
