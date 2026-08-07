@@ -8,7 +8,8 @@
 6. Accept and merge the code to 'main' branch
 7. Open main branch in new Codespace
 8. In terminal run 'az login' to set the Azure sandbox tenant
-9. Run 'script' to deploy app to Azure sandbox
+9. Then run bash scripts/deploy.sh
+10. Optionally set the location / subscription with scripts/deploy.sh [--location westus2] [--subscription <id>]
 
 For help just ask your Microsoft account team for an AccessBooster workshop and an AI Apps Solution Engineer will walk you through all these steps on a Teams call.
 
