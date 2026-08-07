@@ -4,9 +4,6 @@
 2. Download the powershell script (extract_schema.ps1) to run locally against your Access Database so your data is protected and only the schema files get uploaded
 3. Upload the output into access_objects
 4. Run the AccessBooster custom agent, asking it to "modernise my access database"
-
-![Application Screenshot](custom-agent.png)
-   
 5. Wait til agent is done (10-20 minutes)
 6. Accept and merge the code to 'main' branch
 7. Open main branch in new Codespace
