@@ -1,6 +1,6 @@
 ![Application Screenshot](AccessBooster.png)
 
-1. Fork this repo and make your fork private (Settings > Danger Zone > Visibility)
+1. Fork this repo and make your fork private (Settings > Danger Zone > Leave fork network. Then Visibility > Private)
 2. Download the powershell script (extract_schema.ps1) to run locally against your Access Database so your data is protected and only the schema files get uploaded
 3. Upload the output into access_objects
 4. Run the AccessBooster custom agent, asking it to "modernise my access database"
