@@ -1,15 +1,14 @@
+targetScope = 'subscription'
+
 @description('Timestamp suffix used to make resource names unique')
 param timestamp string = utcNow('yyyyMMddHHmmss')
 
 @description('Azure region for all resources')
 param location string = 'eastus'
 
-var suffix = timestamp
-var resourceGroupName = 'rg-access-booster-${suffix}'
-var appServicePlanName = 'asp-access-booster-${suffix}'
-var appServiceName = 'app-access-booster-${suffix}'
-
-targetScope = 'subscription'
+var resourceGroupName = 'rg-access-booster-${timestamp}'
+var appServicePlanName = 'asp-access-booster-${timestamp}'
+var appServiceName = 'app-access-booster-${timestamp}'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName

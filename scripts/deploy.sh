@@ -61,23 +61,33 @@ echo ""
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BICEP_FILE="${SCRIPT_DIR}/../infra/main.bicep"
 
+DEPLOY_OUTPUT=$(mktemp)
+chmod 600 "${DEPLOY_OUTPUT}"
+trap 'rm -f "${DEPLOY_OUTPUT}"' EXIT
+
 az deployment sub create \
   --name        "${DEPLOYMENT_NAME}" \
   --location    "${LOCATION}" \
   --template-file "${BICEP_FILE}" \
   --parameters  timestamp="${TIMESTAMP}" location="${LOCATION}" \
   --output      json \
-  | tee /tmp/deploy-output.json
+  > "${DEPLOY_OUTPUT}"
 
 echo ""
 echo "✅ Deployment complete."
 echo ""
 
 # ── Print outputs ─────────────────────────────────────────────────────────────
-RG=$(jq -r '.properties.outputs.resourceGroupName.value' /tmp/deploy-output.json)
-PLAN=$(jq -r '.properties.outputs.appServicePlanName.value' /tmp/deploy-output.json)
-APP=$(jq -r '.properties.outputs.appServiceName.value' /tmp/deploy-output.json)
-HOST=$(jq -r '.properties.outputs.appServiceDefaultHostName.value' /tmp/deploy-output.json)
+if ! jq -e '.properties.outputs' "${DEPLOY_OUTPUT}" > /dev/null 2>&1; then
+  echo "ERROR: Deployment output is missing expected fields. Check the Azure portal for details."
+  cat "${DEPLOY_OUTPUT}"
+  exit 1
+fi
+
+RG=$(jq -r '.properties.outputs.resourceGroupName.value' "${DEPLOY_OUTPUT}")
+PLAN=$(jq -r '.properties.outputs.appServicePlanName.value' "${DEPLOY_OUTPUT}")
+APP=$(jq -r '.properties.outputs.appServiceName.value' "${DEPLOY_OUTPUT}")
+HOST=$(jq -r '.properties.outputs.appServiceDefaultHostName.value' "${DEPLOY_OUTPUT}")
 
 echo "Resource Group  : ${RG}"
 echo "App Service Plan: ${PLAN}"
