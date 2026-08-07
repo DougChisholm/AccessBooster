@@ -1,5 +1,7 @@
 ![Application Screenshot](AccessBooster.png)
 
+Follow these steps to run the agent (images for steps are in readme_images)
+
 1. Fork this repo and make your fork private (Settings > Danger Zone > Leave fork network. Then Visibility > Private)
 2. Download the powershell script (extract_schema.ps1) to run locally against your Access Database so your data is protected and only the schema files get uploaded
 3. Upload the output into access_objects
