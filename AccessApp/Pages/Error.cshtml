@@ -1,0 +1,16 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<section class="panel error-page">
+    <p class="eyebrow">Unexpected error</p>
+    <h1>We could not complete that request.</h1>
+    <p class="lead">Try again. If the problem continues, check the application logs and database configuration.</p>
+    @if (Model.ShowRequestId)
+    {
+        <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+    }
+    <a class="button-secondary" asp-page="/Index">Return to bookings</a>
+</section>

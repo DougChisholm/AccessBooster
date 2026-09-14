@@ -14,16 +14,38 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     name: 'B1'
     tier: 'Basic'
   }
-  kind: 'app'
+  kind: 'linux'
+  properties: {
+    reserved: true
+  }
 }
 
 resource appService 'Microsoft.Web/sites@2023-01-01' = {
   name: appServiceName
   location: location
-  kind: 'app'
+  kind: 'app,linux'
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
+    siteConfig: {
+      linuxFxVersion: 'DOTNETCORE|10.0'
+      ftpsState: 'Disabled'
+      minTlsVersion: '1.2'
+      appSettings: [
+        {
+          name: 'ASPNETCORE_ENVIRONMENT'
+          value: 'Production'
+        }
+        {
+          name: 'ConnectionStrings__DefaultConnection'
+          value: 'Data Source=/home/app.db'
+        }
+        {
+          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+          value: 'true'
+        }
+      ]
+    }
   }
 }
 

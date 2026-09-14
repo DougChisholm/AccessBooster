@@ -1,0 +1,13 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Local application data and publish output
+*.db
+publish/
+*.zip
+
+# IDE and generated infrastructure output
+.vs/
+.vscode/
+infra/*.json

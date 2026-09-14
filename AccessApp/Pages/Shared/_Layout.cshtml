@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>@ViewData["Title"] · Access Cinema</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" asp-page="/Index" aria-label="Access Cinema home">
+                <span class="brand-mark" aria-hidden="true">AC</span>
+                <span>Access Cinema</span>
+            </a>
+            <nav aria-label="Primary">
+                <a class="nav-link" asp-page="/Index">Bookings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <span>Access Cinema booking desk</span>
+        <span>Modernized from Microsoft Access</span>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

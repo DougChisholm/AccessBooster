@@ -1,0 +1,190 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Book a showing";
+    var selectedShowing = Model.Showings.FirstOrDefault(showing => showing.ShowingId == Model.Input.ShowingId);
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Cinema desk</p>
+        <h1>Book a showing</h1>
+        <p class="lead">Choose an upcoming film, check live seat availability, and create a booking.</p>
+    </div>
+    <div class="capacity-pill" title="Capacity per showing">
+        <span class="status-dot"></span>
+        50 seats per showing
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    var isSuccess = string.Equals(Model.StatusKind, "success", StringComparison.OrdinalIgnoreCase);
+    <div class="flash flash-@(isSuccess ? "success" : "error")" role="@(isSuccess ? "status" : "alert")">
+        <strong>@(isSuccess ? "Success." : "Notice.")</strong> @Model.StatusMessage
+    </div>
+}
+
+<div asp-validation-summary="ModelOnly" class="flash flash-error" role="alert"></div>
+
+<form method="post" asp-page-handler="Book" id="booking-form">
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Upcoming showings</h2>
+                    <p>Select a row to update availability.</p>
+                </div>
+                <span class="counter">@Model.Showings.Count</span>
+            </div>
+
+            @if (Model.Showings.Count == 0)
+            {
+                <div class="empty-state">
+                    <h3>No upcoming showings</h3>
+                    <p>Add future showings to the database and they will appear here.</p>
+                </div>
+            }
+            else
+            {
+                <fieldset class="showing-list">
+                    <legend class="visually-hidden">Available film showings</legend>
+                    @foreach (var showing in Model.Showings)
+                    {
+                        var isFull = showing.SeatsLeft <= 0;
+                        var isSelected = showing.ShowingId == Model.Input.ShowingId;
+                        <label class="showing-row @(isFull ? "is-full" : null)">
+                            <input type="radio"
+                                   asp-for="Input.ShowingId"
+                                   value="@showing.ShowingId"
+                                   checked="@isSelected"
+                                   disabled="@isFull"
+                                   data-bookings="@showing.BookingCount"
+                                   data-booked="@showing.SeatsBooked"
+                                   data-left="@showing.SeatsLeft" />
+                            <span class="radio-indicator" aria-hidden="true"></span>
+                            <span class="showing-main">
+                                <strong>@showing.FilmTitle</strong>
+                                <span>
+                                    @showing.ShowingDate.ToString("ddd, dd MMM yyyy")
+                                    at @showing.ShowingTime.ToString("HH:mm")
+                                </span>
+                            </span>
+                            <span class="seat-badge @(isFull ? "seat-badge-full" : null)">
+                                @(isFull ? "Full" : $"{showing.SeatsLeft} left")
+                            </span>
+                        </label>
+                    }
+                </fieldset>
+            }
+            <span asp-validation-for="Input.ShowingId" class="field-validation"></span>
+        </section>
+
+        <aside class="booking-column">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Seat availability</h2>
+                        <p id="availability-caption">
+                            @(selectedShowing is null ? "Select a showing to begin." : selectedShowing.FilmTitle)
+                        </p>
+                    </div>
+                </div>
+                <div class="stats-grid" aria-live="polite">
+                    <div class="stat">
+                        <span>Bookings</span>
+                        <strong id="booking-count">@(selectedShowing?.BookingCount.ToString() ?? "—")</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Seats booked</span>
+                        <strong id="seat-count">@(selectedShowing?.SeatsBooked.ToString() ?? "—")</strong>
+                    </div>
+                    <div class="stat stat-accent">
+                        <span>Seats left</span>
+                        <strong id="seats-left">@(selectedShowing?.SeatsLeft.ToString() ?? "—")</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Booking details</h2>
+                        <p>All fields are required.</p>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="field">
+                        <label asp-for="Input.CustomerId"></label>
+                        <select asp-for="Input.CustomerId">
+                            <option value="">Choose a customer</option>
+                            @foreach (var customer in Model.Customers)
+                            {
+                                <option value="@customer.CustomerId">@customer.CustomerName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Input.CustomerId" class="field-validation"></span>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="Input.Seats"></label>
+                        <input asp-for="Input.Seats" type="number" min="1" max="50" inputmode="numeric" />
+                        <span class="field-help">A showing has a maximum capacity of 50.</span>
+                        <span asp-validation-for="Input.Seats" class="field-validation"></span>
+                    </div>
+
+                    <button type="submit"
+                            class="button-primary"
+                            id="make-booking"
+                            disabled="@(selectedShowing is null || selectedShowing.SeatsLeft <= 0)">
+                        Make booking
+                    </button>
+                </div>
+            </section>
+        </aside>
+    </div>
+</form>
+
+<section class="panel recent-panel">
+    <div class="panel-header">
+        <div>
+            <h2>Recent bookings</h2>
+            <p>The latest booking records in the database.</p>
+        </div>
+    </div>
+    @if (Model.RecentBookings.Count == 0)
+    {
+        <div class="empty-state"><p>No bookings have been made yet.</p></div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking</th>
+                        <th>Customer</th>
+                        <th>Film</th>
+                        <th>Showing</th>
+                        <th class="number-cell">Seats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model.RecentBookings)
+                    {
+                        <tr>
+                            <td><span class="booking-id">#@booking.BookingId</span></td>
+                            <td>@booking.CustomerName</td>
+                            <td>@booking.FilmTitle</td>
+                            <td>
+                                @booking.ShowingDate.ToString("dd MMM yyyy")
+                                <span class="muted">@booking.ShowingTime.ToString("HH:mm")</span>
+                            </td>
+                            <td class="number-cell">@booking.Seats</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
